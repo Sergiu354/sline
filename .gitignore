@@ -5,6 +5,8 @@ target/
 !**/src/main/**
 !**/src/test/**
 
+First_Commit.patch
+
 ### STS ###
 .apt_generated
 .classpath
