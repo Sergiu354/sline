@@ -1,5 +1,7 @@
 package com.sline.sline.entity.system;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sline.sline.entity.project.company.Company;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -48,6 +50,10 @@ public class User {
 
     @Column
     private boolean enabled;
+
+    @ManyToMany(mappedBy = "users")
+    @JsonIgnore
+    private Collection<Company> company;
 
     @ManyToMany
     @JoinTable(

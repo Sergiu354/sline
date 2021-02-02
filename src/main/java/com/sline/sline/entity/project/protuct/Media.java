@@ -9,11 +9,11 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "Images")
+@Table(name = "Media")
 @Getter
 @Setter
 @ToString
-public class Image {
+public class Media {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

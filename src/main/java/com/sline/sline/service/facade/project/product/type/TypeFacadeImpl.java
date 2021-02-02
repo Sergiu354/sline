@@ -5,8 +5,7 @@ import com.sline.sline.dto.product.ProductDto;
 import com.sline.sline.entity.project.protuct.Type;
 import com.sline.sline.entity.project.protuct.Product;
 import com.sline.sline.service.facade.project.product.amount.AmountFacade;
-import com.sline.sline.service.facade.project.product.image.ImageFacade;
-import com.sline.sline.service.facade.project.product.video.VideoFacade;
+import com.sline.sline.service.facade.project.product.media.MediaFacade;
 import com.sline.sline.service.project.product.type.TypeService;
 import com.sline.sline.service.project.product.product.ProductService;
 import lombok.AllArgsConstructor;
@@ -31,8 +30,7 @@ public class TypeFacadeImpl implements TypeFacade {
     private final ProductService productService;
     private final TypeService typeService;
     private final AmountFacade amountFacade;
-    private final ImageFacade imageFacade;
-    private final VideoFacade videoFacade;
+    private final MediaFacade mediaFacade;
 
     @Override
     public TypeDto findByUuid(String uuid) {
@@ -105,12 +103,8 @@ public class TypeFacadeImpl implements TypeFacade {
             amountFacade.setUuid(type.getAmount());
         }
 
-        if (type.getImages()!=null) {
-            type.getImages().forEach(imageFacade::setUuid);
-        }
-
-        if (type.getVideos()!=null) {
-            type.getVideos().forEach(videoFacade::setUuid);
+        if (type.getMedias()!=null) {
+            type.getMedias().forEach(mediaFacade::setUuid);
         }
     }
 

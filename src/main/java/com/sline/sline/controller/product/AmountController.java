@@ -5,6 +5,8 @@ import com.sline.sline.service.facade.project.product.amount.AmountFacade;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,8 +18,9 @@ public class AmountController {
     private final AmountFacade amountFacade;
 
     @GetMapping(value = "/{uuid}")
-    public AmountDto findByUuid(@PathVariable String uuid) {
-        return amountFacade.findByUuid(uuid);
+    public ResponseEntity<AmountDto> findByUuid(@PathVariable String uuid) {
+        return new ResponseEntity<>(amountFacade.findByUuid(uuid), HttpStatus.OK);
+        //return amountFacade.findByUuid(uuid);
     }
 
     @GetMapping(value = "/find-by-type")

@@ -8,7 +8,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class VideoDto {
+public class MediaDto {
     private String uuid;
     private String link;
     private String path;

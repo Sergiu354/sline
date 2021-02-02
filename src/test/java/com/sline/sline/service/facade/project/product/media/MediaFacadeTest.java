@@ -1,13 +1,13 @@
-package com.sline.sline.service.facade.project.product.image;
+package com.sline.sline.service.facade.project.product.media;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ImageFacadeTest {
+class MediaFacadeTest {
     @Autowired
-    private ImageFacade imageFacade;
+    private MediaFacade mediaFacade;
 
     @Test
     void findByUuid() {

@@ -1,5 +1,7 @@
 package com.sline.sline.entity.project.order;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.sline.sline.entity.project.company.Company;
 import com.sline.sline.entity.project.person.Person;
 import com.sline.sline.entity.project.protuct.Product;
 import com.sline.sline.entity.system.User;
@@ -59,4 +61,10 @@ public class Order {
 
     @Column(columnDefinition="TEXT")
     private String description;
+
+    @ToString.Exclude
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", nullable=false)
+    private Company company;
 }

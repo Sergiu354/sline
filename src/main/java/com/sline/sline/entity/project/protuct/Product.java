@@ -1,6 +1,8 @@
 package com.sline.sline.entity.project.protuct;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.sline.sline.entity.project.company.Company;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -44,4 +46,10 @@ public class Product {
 
     @Column(nullable = false)
     private boolean isAmount = false;
+
+    @ToString.Exclude
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", nullable=false)
+    private Company company;
 }

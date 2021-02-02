@@ -1,5 +1,7 @@
 package com.sline.sline.dto.order;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.sline.sline.dto.company.CompanyDto;
 import com.sline.sline.dto.person.PersonDto;
 import com.sline.sline.dto.product.ProductDto;
 import com.sline.sline.dto.user.UserDto;
@@ -29,4 +31,6 @@ public class OrderDto {
     private Float advance;
     private Float discount;
     private String description;
+    @JsonBackReference
+    private CompanyDto company;
 }

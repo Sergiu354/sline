@@ -16,10 +16,7 @@ public class TypeDto {
     private String name;
     @ToString.Exclude
     @JsonManagedReference
-    private Set<ImageDto> images;
-    @ToString.Exclude
-    @JsonManagedReference
-    private Set<VideoDto> videos;
+    private Set<MediaDto> medias;
     @ToString.Exclude
     @JsonBackReference
     private ProductDto product;
