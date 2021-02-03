@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +27,20 @@ public class OrderFacadeImpl implements OrderFacade {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass().getName());
 
     private final OrderService orderService;
+    private final ModelMapper modelMapper;
+
+    @PostConstruct
+    private void construct(){
+        modelMapper.getConfiguration().setAmbiguityIgnored(true);
+        modelMapper.addMappings(new PropertyMap<OrderDto, Order>() {
+
+            @Override
+            protected void configure() {
+                skip(destination.getId());
+                skip(destination.getUuid());
+            }
+        });
+    }
 
     @Override
     public OrderDto findByUuid(String uuid) {
@@ -92,6 +107,9 @@ public class OrderFacadeImpl implements OrderFacade {
     public OrderDto edit(OrderDto orderDto) {
         Order order = orderService.findByUuid(orderDto.getUuid());
         if (order!=null) {
+            orderDto.setPerson(null);
+            orderDto.setProduct(null);
+            orderDto.setUser(null);
             convertDtoToEntity(orderDto, order);
             orderService.save(order);
             return convertEntityToDto(order);
@@ -112,27 +130,10 @@ public class OrderFacadeImpl implements OrderFacade {
     }
 
     private OrderDto convertEntityToDto(Order order) {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setAmbiguityIgnored(true);
         return modelMapper.map(order, OrderDto.class);
     }
 
     private void convertDtoToEntity(OrderDto orderDto, Order order) {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setAmbiguityIgnored(true);
-        modelMapper.addMappings(new PropertyMap<OrderDto, Order>() {
-
-            @Override
-            protected void configure() {
-                skip(destination.getId());
-                skip(destination.getUuid());
-                if (orderDto.getUuid()!=null) {
-                    skip(destination.getPerson());
-                    skip(destination.getProduct());
-                    skip(destination.getUser());
-                }
-            }
-        });
         modelMapper.map(orderDto, order);
     }
 }

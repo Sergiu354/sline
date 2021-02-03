@@ -1,8 +1,10 @@
 package com.sline.sline.service.facade.project.product;
 
+import com.sline.sline.dto.company.CompanyDto;
 import com.sline.sline.dto.product.ProductDto;
-import com.sline.sline.entity.project.protuct.Product;
+import com.sline.sline.service.facade.project.company.CompanyFacade;
 import com.sline.sline.service.facade.project.product.product.ProductFacade;
+import com.sline.sline.session.DataSession;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,17 +13,32 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.util.List;
+import javax.annotation.PostConstruct;
+import java.util.HashSet;
+import java.util.Map;
 
 @SpringBootTest
 class ProductFacadeTest {
     @Autowired
     private ProductFacade productFacade;
-    private String uuid = "23bb6377-e88d-466e-bba3-4c7175ec378d";
+
+    @Autowired
+    private CompanyFacade companyFacade;
+
+    private String uuid = "4a402002-bbc3-453a-8a75-7e6f02bbfc9d";
+    private Pageable pageable = PageRequest.of(0,18, Sort.by(Sort.Direction.DESC, "id"));
+
+    @Autowired
+    private DataSession dataSession;
+
+    @PostConstruct
+    void start() {
+        dataSession.setCompanyId((long) 1);
+    }
 
     @Test
-    void save() {
-        for (int i = 0; i<100; i++) {
+    void save() { // 8min
+        for (int i = 0; i<5000; i++) {
             ProductDto productDto = ProductCreator.createProduct();
             productFacade.save(productDto);
         }
@@ -35,7 +52,6 @@ class ProductFacadeTest {
 
     @Test
     void findAll() {
-        Pageable pageable = PageRequest.of(0,18);
         Page<ProductDto> productDtos = productFacade.findAll(pageable);
         System.out.println(productDtos.getTotalElements());
         //System.out.println(productDtos);
@@ -43,21 +59,17 @@ class ProductFacadeTest {
 
     @Test
     void edit() {
-        ProductDto productDto = productFacade.findByUuid(uuid);
+        ProductDto productDto = productFacade.findAll(pageable).iterator().next();
         productDto.setName(productDto.getName() + " - Edit");
         productFacade.edit(productDto);
-        ProductDto productDto1 = productFacade.findByUuid(uuid);
-        System.out.println(productDto1);
-
     }
 
     @Test
     void findAllByInStock() {
-        Pageable pageable = PageRequest.of(0,18, Sort.by(Sort.Direction.DESC, "id"));
+        dataSession.setCompanyId((long) 1);
         Page<ProductDto> productDtos = productFacade.findAllByInStock(10, pageable);
-        //Page<ProductDto> productDtosZero = productFacade.findAllByInStock(0, pageable);
-        productDtos.stream().forEach(System.out::println);
-        //System.out.println(productDtosZero);
+        System.out.println(productDtos);
+        //productDtos.stream().forEach(System.out::println);
     }
 
     @Test

@@ -5,6 +5,7 @@ import com.sline.sline.dto.user.UserDto;
 
 public interface CompanyFacade {
     CompanyDto save(CompanyDto company);
+    CompanyDto findByUuid(String uuid);
     CompanyDto createNewCompany(String companyName);
     default boolean addUser(CompanyDto company, UserDto user) {
         return addUser(company.getUuid(), user.getUuid());

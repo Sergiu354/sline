@@ -18,6 +18,7 @@ import java.util.Set;
 @ToString
 public class CompanyDto {
     private String uuid;
+    private String name;
     @ToString.Exclude
     @JsonManagedReference
     private Set<ProductDto> products = new HashSet<>();

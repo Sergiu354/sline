@@ -18,7 +18,6 @@ public class TypeDto {
     @JsonManagedReference
     private Set<MediaDto> medias;
     @ToString.Exclude
-    @JsonBackReference
     private ProductDto product;
     @JsonManagedReference
     private AmountDto amount;

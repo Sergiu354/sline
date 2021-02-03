@@ -3,14 +3,12 @@ package com.sline.sline.entity.project.company;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sline.sline.entity.project.order.Order;
 import com.sline.sline.entity.project.protuct.Product;
-import com.sline.sline.entity.system.Role;
 import com.sline.sline.entity.system.User;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;

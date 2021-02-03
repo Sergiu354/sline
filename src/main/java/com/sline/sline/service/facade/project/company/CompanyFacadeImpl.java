@@ -13,12 +13,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+
 @Service
 @AllArgsConstructor
 public class CompanyFacadeImpl implements CompanyFacade {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass().getName());
 
     private final CompanyService companyService;
+    private final ModelMapper modelMapper;
+
+    @PostConstruct
+    private void construct(){
+        modelMapper.getConfiguration().setAmbiguityIgnored(true);
+        modelMapper.addMappings(new PropertyMap<CompanyDto, Company>() {
+            @Override
+            protected void configure() {
+                skip(destination.getId());
+                skip(destination.getUuid());
+                skip(destination.getProducts());
+                skip(destination.getOrders());
+                skip(destination.getUsers());
+            }
+        });
+    }
 
     @Override
     public CompanyDto save(CompanyDto companyDto) {
@@ -26,6 +44,15 @@ public class CompanyFacadeImpl implements CompanyFacade {
         convertDtoToEntity(companyDto, company);
         companyService.save(company);
         return convertEntityToDto(company);
+    }
+
+    @Override
+    public CompanyDto findByUuid(String uuid) {
+        Company company = companyService.findByUuid(uuid);
+        if (company!=null)
+            return convertEntityToDto(companyService.findByUuid(uuid));
+        LOGGER.info("Not found company UUID: {}", uuid);
+        return null;
     }
 
     @Override
@@ -76,24 +103,10 @@ public class CompanyFacadeImpl implements CompanyFacade {
     }
 
     private CompanyDto convertEntityToDto(Company company) {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setAmbiguityIgnored(true);
         return modelMapper.map(company, CompanyDto.class);
     }
 
     private void convertDtoToEntity(CompanyDto companyDto, Company company) {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setAmbiguityIgnored(true);
-        modelMapper.addMappings(new PropertyMap<CompanyDto, Company>() {
-            @Override
-            protected void configure() {
-                skip(destination.getId());
-                skip(destination.getUuid());
-                skip(destination.getProducts());
-                skip(destination.getOrders());
-                skip(destination.getUsers());
-            }
-        });
         modelMapper.map(companyDto, company);
     }
 }

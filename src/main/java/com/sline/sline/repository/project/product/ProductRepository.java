@@ -11,15 +11,17 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    @Query(value = "SELECT * FROM product T INNER JOIN types ON types.product_id = T.id INNER JOIN amount ON amount.type_id = types.id where amount.amount>=:amountSize",
+    @Query(value = "SELECT * FROM product T INNER JOIN types ON types.product_id = T.id INNER JOIN amount ON amount.type_id = types.id where amount.amount>=:amountSize and T.company_id=:companyId",
             nativeQuery = true)
-    Page<Product> findAllByAmount(@Param("amountSize") Integer amountSize, Pageable pageable);
+    Page<Product> findAllByAmount(@Param("amountSize") Integer amountSize, @Param("companyId") Long companyId, Pageable pageable);
 
-    @Query(value = "SELECT * FROM product T INNER JOIN types ON types.product_id = T.id INNER JOIN amount ON amount.type_id = types.id where amount.amount=0 or T.isAmount IS FALSE",
+    @Query(value = "SELECT * FROM product T INNER JOIN types ON types.product_id = T.id INNER JOIN amount ON amount.type_id = types.id where (amount.amount=0 or T.isAmount) and T.company_id=:companyId IS FALSE",
             nativeQuery = true)
-    Page<Product> findAllByAmountIsFalse(Pageable pageable);
+    Page<Product> findAllByAmountIsFalse(@Param("companyId") Long companyId, Pageable pageable);
 
-    Page<Product> findAll(Pageable pageable);
-    Product findByUuid(String uuid);
+    Page<Product> findAllByCompany_Id(Long companyId, Pageable pageable);
+
+    Product findByUuidAndCompany_Id(String uuid, Long companyId);
+
     void deleteByUuid(String uuid);
 }

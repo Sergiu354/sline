@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.UUID;
 
 @Service
@@ -22,6 +23,19 @@ public class AmountFacadeImpl implements AmountFacade {
 
     private final AmountService amountService;
     private final TypeService typeService;
+    private final ModelMapper modelMapper;
+
+    @PostConstruct
+    private void construct() {
+        modelMapper.getConfiguration().setAmbiguityIgnored(true);
+        modelMapper.addMappings(new PropertyMap<AmountDto, Amount>() {
+            @Override
+            protected void configure() {
+                skip(destination.getId());
+            }
+        });
+    }
+
 
     @Override
     public AmountDto findByUuid(String uuid) {
@@ -86,20 +100,10 @@ public class AmountFacadeImpl implements AmountFacade {
     }
 
     private AmountDto convertEntityToDto(Amount amount) {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setAmbiguityIgnored(true);
         return modelMapper.map(amount, AmountDto.class);
     }
 
     private void convertDtoToEntity(AmountDto amountDto, Amount amount) {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setAmbiguityIgnored(true);
-        modelMapper.addMappings(new PropertyMap<AmountDto, Amount>() {
-            @Override
-            protected void configure() {
-                skip(destination.getId());
-            }
-        });
         modelMapper.map(amountDto, amount);
     }
 

@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,18 @@ public class MediaFacadeImpl implements MediaFacade {
 
     private final MediaService mediaService;
     private final TypeService typeService;
+    private final ModelMapper modelMapper;
+
+    @PostConstruct
+    private void construct() {
+        modelMapper.getConfiguration().setAmbiguityIgnored(true);
+        modelMapper.addMappings(new PropertyMap<MediaDto, Media>() {
+            @Override
+            protected void configure() {
+                skip(destination.getId());
+            }
+        });
+    }
 
     @Override
     public MediaDto findByUuid(String uuid) {
@@ -100,20 +113,10 @@ public class MediaFacadeImpl implements MediaFacade {
     }
 
     private MediaDto convertEntityToDto(Media media) {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setAmbiguityIgnored(true);
         return modelMapper.map(media, MediaDto.class);
     }
 
     private void convertDtoToEntity(MediaDto mediaDto, Media media) {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setAmbiguityIgnored(true);
-        modelMapper.addMappings(new PropertyMap<MediaDto, Media>() {
-            @Override
-            protected void configure() {
-                skip(destination.getId());
-            }
-        });
         modelMapper.map(mediaDto, media);
     }
 }

@@ -9,9 +9,9 @@ import java.util.List;
 public interface ProductService {
     void save(Product product);
     Product findById(Long id);
-    Product findByUuid(String uuid);
+    Product findByUuid(String uuid, Long companyId);
     void deleteById(Long id);
     void deleteByUuid(String uuid);
-    Page<Product> findAllByInStock(Integer stockSize, Pageable pageable);
-    Page<Product> findAll(Pageable pageable);
+    Page<Product> findAllByInStock(Integer stockSize, Long companyId,  Pageable pageable);
+    Page<Product> findAll(Long companyId, Pageable pageable);
 }

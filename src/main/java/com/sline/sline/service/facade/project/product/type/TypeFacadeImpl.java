@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +32,21 @@ public class TypeFacadeImpl implements TypeFacade {
     private final TypeService typeService;
     private final AmountFacade amountFacade;
     private final MediaFacade mediaFacade;
+    private final ModelMapper modelMapper;
+
+    @PostConstruct
+    private void construct() {
+        modelMapper.getConfiguration().setAmbiguityIgnored(true).setMatchingStrategy(MatchingStrategies.LOOSE);
+        modelMapper.addMappings(new PropertyMap<TypeDto, Type>(){
+            @Override
+            protected void configure() {
+                skip(destination.getId());
+                skip(destination.getUuid());
+            }
+        });
+    }
+
+    private static Long userId = (long) 1;
 
     @Override
     public TypeDto findByUuid(String uuid) {
@@ -54,7 +70,7 @@ public class TypeFacadeImpl implements TypeFacade {
 
     @Override
     public void save(String productUuid, TypeDto typeDto) {
-        Product product = productService.findByUuid(productUuid);
+        Product product = productService.findByUuid(productUuid, userId);
         if (product!=null) {
             Type type = new Type();
             convertDtoToEntity(typeDto, type);
@@ -67,7 +83,7 @@ public class TypeFacadeImpl implements TypeFacade {
 
     @Override
     public void save(String productUuid, List<TypeDto> typeDtos) {
-        Product product = productService.findByUuid(productUuid);
+        Product product = productService.findByUuid(productUuid, userId);
         Set<Type> types = new HashSet<>();
         for (TypeDto typeDto : typeDtos) {
             Type type = new Type();
@@ -109,24 +125,11 @@ public class TypeFacadeImpl implements TypeFacade {
     }
 
     private TypeDto convertEntityToDto(Type type) {
-        if (type ==null)
-            return null;
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setAmbiguityIgnored(true);
         return modelMapper.map(type, TypeDto.class);
     }
 
 
     private void convertDtoToEntity(TypeDto typeDto, Type type) {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setAmbiguityIgnored(true).setMatchingStrategy(MatchingStrategies.LOOSE);
-        modelMapper.addMappings(new PropertyMap<TypeDto, Type>(){
-            @Override
-            protected void configure() {
-                skip(destination.getId());
-                skip(destination.getUuid());
-            }
-        });
         modelMapper.map(typeDto, type);
     }
 }
